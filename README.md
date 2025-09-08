@@ -4,7 +4,7 @@ A simple Next.js + shadcn/ui dashboard with login, logout, and state management.
 
 ## 🚀 Tech Stack
 
-- [Next.js 14](https://nextjs.org/) (App Router)
+- [Next.js 15](https://nextjs.org/) (App Router)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
