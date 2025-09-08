@@ -1,4 +1,4 @@
-function CAmbientCircles() {
+function CAmbientCircles(): React.ReactNode {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="absolute -top-24 -left-24 size-[480px] rounded-full bg-fuchsia-600/20 blur-[100px]" />

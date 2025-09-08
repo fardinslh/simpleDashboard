@@ -15,6 +15,7 @@ import { localstorageKeys } from "@/constants/localstorageKeys";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import CAmbientCircles from "@/components/CAmbientCircles";
 import { loggedIn } from "@/lib/store/authSlice";
+import CLoadingSpinner from "@/components/CLoadingSpinner";
 
 const PHONE_NUMBER_ERROR =
   "Please enter a valid number: 09123456789, +989123456789, or 00989123456789";
@@ -101,14 +102,14 @@ function LoginPageContent(): React.ReactNode {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="max-w-md w-full"
+          className="max-w-md w-full px-4 sm:px-0"
         >
-          <Card
-            className="border-zinc-800/60 bg-zinc-900/40 backdrop-blur-xl shadow-2xl shadow-black/40"
-            style={{ padding: 10 }}
-          >
+          <Card className="border-zinc-800/60 bg-zinc-900/40 backdrop-blur-xl shadow-2xl shadow-black/40">
             <CardContent>
-              <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
+              <form
+                className="flex flex-col gap-2"
+                onSubmit={handleSubmit(onSubmit)}
+              >
                 <div className="flex flex-col gap-3">
                   <Label htmlFor="email" className="text-white">
                     Phone Number
@@ -153,9 +154,11 @@ function LoginPageContent(): React.ReactNode {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="mt-2 h-11 w-full rounded-xl bg-gradient-to-r from-fuchsia-600 to-indigo-600 text-white shadow-lg shadow-fuchsia-900/30 transition-transform hover:translate-y-[-1px] hover:shadow-xl focus-visible:ring-fuchsia-500"
+                  className={`mt-2 h-11 w-full rounded-xl bg-gradient-to-r from-fuchsia-600 to-indigo-600 text-white shadow-lg shadow-fuchsia-900/30 transition-transform hover:translate-y-[-1px] hover:shadow-xl focus-visible:ring-fuchsia-500 ${
+                    loading ? "" : "cursor-pointer"
+                  }`}
                 >
-                  {loading ? "Signing in…" : "Sign in"}
+                  {loading ? <CLoadingSpinner /> : "Sign in"}
                 </Button>
               </form>
             </CardContent>

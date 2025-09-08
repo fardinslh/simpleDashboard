@@ -1,18 +1,26 @@
 "use client";
 
-import { localstorageKeys } from "@/constants/localstorageKeys";
-import { loggedIn, setLoading } from "@/lib/store/authSlice";
-import { useAppDispatch } from "@/lib/store/hooks";
 import { useEffect } from "react";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { localstorageKeys } from "@/constants/localstorageKeys";
+import { loggedIn, loggedOut, setLoading } from "@/lib/store/authSlice";
 
-function StateUpdater(): React.ReactNode {
+function StateUpdater() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const user = localStorage.getItem(localstorageKeys.user);
+    try {
+      const user = localStorage.getItem(localstorageKeys.user);
 
-    if (user) {
-      dispatch(loggedIn());
+      if (user) {
+        JSON.parse(user);
+        dispatch(loggedIn());
+      } else {
+        dispatch(loggedOut());
+      }
+    } catch {
+      dispatch(loggedOut());
+    } finally {
       dispatch(setLoading(false));
     }
   }, [dispatch]);

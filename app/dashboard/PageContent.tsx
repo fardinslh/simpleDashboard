@@ -13,8 +13,10 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { AvatarFallback, Avatar } from "@/components/ui/avatar";
 import CAmbientCircles from "@/components/CAmbientCircles";
 import { loggedOut } from "@/lib/store/authSlice";
+import CLoadingSpinner from "@/components/CLoadingSpinner";
 
-function DashboardPageContent() {
+function DashboardPageContent(): React.ReactNode {
+  const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
   const [user, setUser] = useState<UserLoginData>();
   const router = useRouter();
   const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
@@ -31,42 +33,64 @@ function DashboardPageContent() {
         router.replace(routes.login);
       }
     }
-  }, [isLoggedIn]);
+  }, [isLoading, isLoggedIn]);
   // if you have a warning here is actually for using router. router is recognized as a variable here but it will be always stable during the renders. So adding or not adding it as a dependency won't affect anything and does not cause the app to crash.
 
   async function onLogout() {
+    setLogoutLoading(true);
     localStorage.removeItem(localstorageKeys.user);
     dispatch(loggedOut());
-    await new Promise((r) => setTimeout(r, 250));
+    await new Promise((resolve) => setTimeout(resolve, 250));
     router.push(routes.login);
   }
 
-  const username = user?.name.first;
+  const firstName = user?.name.first;
+  const lastName = user?.name.last;
 
-  const initials = username?.[0].toUpperCase();
+  const initials = firstName?.[0].toUpperCase();
 
   return (
     <div className="h-full w-full bg-gradient-to-br from-zinc-950 via-zinc-900 to-black text-zinc-100">
       <CAmbientCircles />
-
       <div className="w-full p-5">
         <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-3">
-            <Avatar className="size-10">
-              <AvatarFallback className="bg-zinc-900 text-zinc-200">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm text-zinc-400">Signed in as</p>
-              <p className="font-medium text-zinc-100">{username}</p>
+          {isLoading ? (
+            <div className="h-[44px] ml-20 pt-3">
+              <CLoadingSpinner className="size-8 max-sm:size-5" />
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Avatar className="size-10">
+                <AvatarFallback className="bg-zinc-900 text-zinc-200">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm text-zinc-400">Signed in as</p>
+                <div className="flex items-center gap-1">
+                  <p className="font-medium text-zinc-100">{firstName}</p>
+                  <p className="font-medium text-zinc-100">{lastName}</p>
+                </div>
+              </div>
+            </div>
+          )}
           <Button
             onClick={onLogout}
-            className="gap-2 bg-gradient-to-r from-fuchsia-600 to-indigo-600 w-24"
+            disabled={isLoading || logoutLoading}
+            className="flex items-center gap-2 bg-gradient-to-r from-fuchsia-600 to-indigo-600 w-24"
           >
-            <BiLogOut className="h-4 w-4" /> Logout
+            {isLoading || logoutLoading ? (
+              <div>
+                <CLoadingSpinner />
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div>
+                  <BiLogOut className="size-4" />
+                </div>
+                <div>Logout</div>
+              </div>
+            )}
           </Button>
         </div>
 
@@ -78,7 +102,7 @@ function DashboardPageContent() {
           <Card className="border-zinc-800/60 bg-zinc-900/40 backdrop-blur-xl shadow-2xl shadow-black/40 w-full">
             <CardHeader>
               <CardTitle className="text-2xl tracking-tight text-white">
-                Welcome back 👋
+                Welcome back {firstName}👋
               </CardTitle>
             </CardHeader>
           </Card>
